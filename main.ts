@@ -153,17 +153,6 @@ namespace dfrobotI2cLcd {
         command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT)
     }
 
-    //% block="write to lcd %data|string"
-    export function writeToLcd(data: string): void {
-        let buf = pins.createBuffer(2)
-        buf[0] = 0x40
-        for(let i = 0; i < data.length; i++) {
-            buf[1] = data.charCodeAt(i)     
-            pins.i2cWriteBuffer(lcd_addr, buf, false)
-            basic.pause(1)
-        }
-    }
-
     //% block="write string %data"
     export function writeString(data: string): void {
         let buf = pins.createBuffer(1+data.length)
