@@ -1,4 +1,5 @@
 //% weight=100 color=#57a421 block="dfrobot i2c lcd"
+
 //% groups='["LCD"]'
 
 namespace dfrobotI2cLcd {
@@ -68,9 +69,11 @@ namespace dfrobotI2cLcd {
 
     let showcontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF
     let showmode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT
+
     let showfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS | LCD_2LINE
 
     function command(value: number): void {
+
         let buf = pins.createBuffer(2)
         buf[0] = 0x80
         buf[1] = value
@@ -160,8 +163,6 @@ namespace dfrobotI2cLcd {
             basic.pause(1)
         }
         
-
-
     }
 
 } 
