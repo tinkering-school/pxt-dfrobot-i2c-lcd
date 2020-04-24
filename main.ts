@@ -1,4 +1,5 @@
-//% weight=100 color=#57a421 block="dfrobotI2cLcd"
+//% weight=100 color=#57a421 block="dfrobot i2c lcd"
+
 //% groups='["LCD"]'
 
 namespace dfrobotI2cLcd {
@@ -90,14 +91,12 @@ namespace dfrobotI2cLcd {
     //% blockId="dfrobotI2cLcd_init" block="init"
     //% weight=100
     export function init(): void {
-
         basic.pause(40)
         command(LCD_FUNCTIONSET | showfunction)
         basic.pause(5)
         command(LCD_FUNCTIONSET | showfunction)
         basic.pause(5)
         command(LCD_FUNCTIONSET | showfunction)
-
 
         display()
 
@@ -156,14 +155,14 @@ namespace dfrobotI2cLcd {
 
     //% block="write to lcd %data|data"
     export function writeToLcd(data: string): void {
-        let buf = pins.createBuffer(data.length + 1)
+        let buf = pins.createBuffer(2)
         buf[0] = 0x40
         for(let i = 0; i < data.length; i++) {
-            buf[i+1] = data[i].charCodeAt(i)     
+            buf[1] = data[i].charCodeAt(i)     
+            pins.i2cWriteBuffer(lcd_addr, buf, false)
+            basic.pause(1)
         }
-        pins.i2cWriteBuffer(lcd_addr, buf, false)
-
-
+        
     }
 
 } 
