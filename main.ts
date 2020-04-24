@@ -87,7 +87,7 @@ namespace dfrobotI2cLcd {
         pins.i2cWriteBuffer(rgb_addr, buf, false)
     }
 
-    //% block="dfrobot_lcd_init"
+    //% block="dfrobot lcd init"
     //% weight=100
     export function init(): void {
         basic.pause(40)
