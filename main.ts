@@ -69,7 +69,10 @@ namespace dfrobotI2cLcd {
     let showcontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF
     let showmode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT
 
-    function command(value: number): void{
+    let showfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS | LCD_2LINE
+
+    function command(value: number): void {
+
         let buf = pins.createBuffer(2)
         buf[0] = 0x80
         buf[1] = value
@@ -87,13 +90,14 @@ namespace dfrobotI2cLcd {
     //% blockId="dfrobotI2cLcd_init" block="init"
     //% weight=100
     export function init(): void {
-        let _showfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS | LCD_2LINE
+
         basic.pause(40)
-        command(LCD_FUNCTIONSET | _showfunction)
+        command(LCD_FUNCTIONSET | showfunction)
         basic.pause(5)
-        command(LCD_FUNCTIONSET | _showfunction)
+        command(LCD_FUNCTIONSET | showfunction)
         basic.pause(5)
-        command(LCD_FUNCTIONSET | _showfunction)
+        command(LCD_FUNCTIONSET | showfunction)
+
 
         display()
 
@@ -121,10 +125,45 @@ namespace dfrobotI2cLcd {
         basic.pause(2000)
     }
 
-    export function setRgb(r: number, g: number, b: number): void {
-        setReg(REG_RED, r)
-        setReg(REG_GREEN, g)
-        setReg(REG_BLUE, b)
+    //% block = "set rgb %red|red %green|green %blue|blue"
+    //% red.min=0 red.max=255
+    //% green.min=0 green.max=255
+    //% blue.min=0 blue.max=255
+    export function setRgb(red: number, green: number, blue: number): void {
+        setReg(REG_RED, red)
+        setReg(REG_GREEN, green)
+        setReg(REG_BLUE, blue)
+    }
+
+    //% block = "set cursor %row|row %col|col"
+    //% row.min=0 row.max=1
+    //% col.min=0 col.max=15
+    export function setCursor(row: number, col: number): void {
+        let data = (row == 0 ? col | 0x80 : col | 0xc0)
+        let buf = pins.createBuffer(2)
+        buf[0] = 0x80
+        buf[1] = data
+        pins.i2cWriteBuffer(lcd_addr, buf, false)
+    }
+
+    export function scrollDisplayLeft(): void {
+        command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT)
+    }
+
+    export function scrollDisplayRight(): void {
+        command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT)
+    }
+
+    //% block="write to lcd %data|data"
+    export function writeToLcd(data: string): void {
+        let buf = pins.createBuffer(data.length + 1)
+        buf[0] = 0x40
+        for(let i = 0; i < data.length; i++) {
+            buf[i+1] = data[i].charCodeAt(i)     
+        }
+        pins.i2cWriteBuffer(lcd_addr, buf, false)
+
+
     }
 
 } 
